@@ -30,36 +30,15 @@ document.getElementById('vitals-form').addEventListener('submit', async (e) => {
             body: JSON.stringify(formData)
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const result = await response.json();
 
-        // Update results section
-        document.getElementById('bmi').textContent = result.bmi;
-        document.getElementById('summary').innerHTML = result.summary.replace(/\n/g, '<br>');
+        if (!response.ok) {
+            throw new Error(result.error || `HTTP error! status: ${response.status}`);
+        }
+
+        // Update BMI display
+        document.getElementById('bmi').textContent = result.vitals.bmi;
         
-        // Handle alerts
-        const alertsDiv = document.getElementById('alerts');
-        alertsDiv.innerHTML = '';
-        result.alerts.forEach(alert => {
-            const alertElement = document.createElement('div');
-            alertElement.className = `alert ${alert.includes('Critical Alert') ? 'alert-danger' : 'alert-warning'}`;
-            alertElement.textContent = alert;
-            alertsDiv.appendChild(alertElement);
-        });
-
-        // Handle recommendations
-        const recommendationsDiv = document.getElementById('recommendations');
-        recommendationsDiv.innerHTML = '';
-        result.recommendations.forEach(rec => {
-            const recElement = document.createElement('div');
-            recElement.className = 'recommendation-item';
-            recElement.textContent = rec;
-            recommendationsDiv.appendChild(recElement);
-        });
-
         // Show success message
         showNotification('Vitals submitted successfully!', 'success');
 
@@ -68,7 +47,7 @@ document.getElementById('vitals-form').addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.error('Error:', error);
-        showNotification('Error submitting vitals. Please try again.', 'error');
+        showNotification(error.message || 'Error submitting vitals. Please try again.', 'error');
     } finally {
         // Reset button state
         submitButton.disabled = false;

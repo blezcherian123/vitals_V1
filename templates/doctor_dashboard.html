@@ -55,7 +55,7 @@
                         
                         <div class="summary-section">
                             <h4>Summary</h4>
-                            <pre style="white-space: pre-wrap; font-family: inherit; background: none; border: none; padding: 0; margin: 0;">{{ patient.summary }}</pre>
+                            <pre style="white-space: pre-wrap; font-family: inherit; background: none; border: none; padding: 0; margin: 0;">{{ patient.summary or 'No summary available.' }}</pre>
                         </div>
 
                         {% if patient.alerts %}
@@ -63,7 +63,7 @@
                             <h4>Alerts</h4>
                             <ul class="list-unstyled">
                                 {% for alert in patient.alerts %}
-                                <li class="alert {{ 'alert-danger' if 'Critical Alert' in alert else 'alert-warning' }}">
+                                <li class="alert {{ 'alert-danger' if 'Critical' in alert else 'alert-warning' }}">
                                     {{ alert }}
                                 </li>
                                 {% endfor %}
